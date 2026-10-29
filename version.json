@@ -1,0 +1,9 @@
+{
+  "name": "本地工具箱",
+  "version": "0.1.0",
+  "date": "2026-10-29",
+  "changelog": [
+    "v0.1.0 初始发布：Markdown 即时预览、批量文件重命名、本地密码生成器，并内置自动更新检查。"
+  ],
+  "download": "https://github.com/1235gyvycgguvtyfgocuuhcyvuctgugtfyhic/local-toolbox/releases/latest"
+}

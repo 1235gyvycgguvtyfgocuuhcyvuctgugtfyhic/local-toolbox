@@ -1,0 +1,34 @@
+# 流量统计：每天自动抓取 clone / view / download 数据
+# 运行方式：GitHub Actions 免费额度，无需服务器。
+# 注意：版本号修改后要同步更新 index.html 里的 APP.version 和本仓库根目录 version.json。
+
+name: 流量统计
+
+on:
+  schedule:
+    # 每天 UTC 01:00 = 北京时间 09:00
+    - cron: '0 1 * * *'
+  # 也支持手动触发：仓库 Actions 页面 → 流量统计 → Run workflow
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 抓取并累计流量数据
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: python3 .github/collect_stats.py
+
+      - name: 提交统计数据
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "今天无数据变化，跳过提交" || (git commit -m "chore: 更新流量统计 $(date -u +%Y-%m-%d)" && git push)
